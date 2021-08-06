@@ -1,7 +1,13 @@
 <template>
   <div>
-    <div v-for="home in homes" :key="home.objectID" style="float: left; margin: 10px">
-      <NuxtLink :to="`/home/${home.objectID}`" prefetch><HomeCard :home="home" /></NuxtLink>
+    <div
+      v-for="home in homes"
+      :key="home.objectID"
+      style="float: left; margin: 10px"
+    >
+      <NuxtLink :to="`/home/${home.objectID}`" prefetch>
+        <home-card :home="home" />
+      </NuxtLink>
     </div>
   </div>
 </template>
@@ -10,7 +16,12 @@
 import homes from '~/data/homes';
 
 export default {
-  head(){
+  data() {
+    return {
+      homes: homes.slice(0, 3),
+    };
+  },
+  head() {
     // adding head tags
     return {
       title: 'Homepage',
@@ -18,15 +29,10 @@ export default {
         {
           name: 'description',
           content: 'This is the homepage description',
-          hid: 'description'
-        }
-      ]
-    }
+          hid: 'description',
+        },
+      ],
+    };
   },
-  data(){
-    return {
-      homes: homes.slice(0, 3)
-    }
-  }
-}
+};
 </script>
