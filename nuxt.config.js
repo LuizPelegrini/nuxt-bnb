@@ -13,5 +13,8 @@ export default {
     bodyAttrs: {
       class: ['my-style']
     }
+  },
+  router: {
+    prefetchLinks: false
   }
 }
