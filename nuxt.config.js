@@ -1,5 +1,8 @@
 export default {
   components: true, // autoimport of components
+  env: {
+    mapsKey: process.env.MAPS_API_KEY,
+  },
   head: {
     // every page head config
     titleTemplate: 'Mastering Nuxt: %s',
