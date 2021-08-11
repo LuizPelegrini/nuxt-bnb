@@ -2,6 +2,8 @@ export default {
   components: true, // autoimport of components
   env: {
     mapsKey: process.env.MAPS_API_KEY,
+    agoliaAppId: process.env.AGOLIA_APP_ID,
+    agoliaApiKey: process.env.AGOLIA_API_KEY,
   },
   head: {
     // every page head config
@@ -21,4 +23,5 @@ export default {
   router: {
     prefetchLinks: false, // disable prefetching globally using NuxtLink
   },
+  plugins: ['~/plugins/maps.client', '~/plugins/dataApi'],
 };
