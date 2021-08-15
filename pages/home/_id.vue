@@ -21,22 +21,37 @@
     {{ home.bathrooms }} bath<br />
     {{ home.description }}
     <div ref="map" style="width: 800px; height: 800px"></div>
+    <div v-for="review in reviews" :key="review.objectID">
+      <img :src="review.reviewer.image" alt="reviewer image" /><br />
+      {{ review.reviewer.name }}<br />
+      {{ review.comment }}<br />
+      {{ review.date }}<br />
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   async asyncData({ params, $dataApi, error }) {
-    const response = await $dataApi.getHome(params.id);
-    if (!response.ok) {
+    const homeResponse = await $dataApi.getHome(params.id);
+    if (!homeResponse.ok) {
       return error({
-        statusCode: response.status,
-        message: response.statusText,
+        statusCode: homeResponse.status,
+        message: homeResponse.statusText,
+      });
+    }
+
+    const reviewsResponse = await $dataApi.getReviewsByHomeId(params.id);
+    if (!reviewsResponse.ok) {
+      return error({
+        statusCode: reviewsResponse.status,
+        message: reviewsResponse.statusText,
       });
     }
 
     return {
-      home: response.data,
+      home: homeResponse.data,
+      reviews: reviewsResponse.data.hits,
     };
   },
   head() {

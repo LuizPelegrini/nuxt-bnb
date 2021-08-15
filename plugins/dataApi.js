@@ -53,9 +53,29 @@ export default function (context, inject) {
     }
   }
 
+  async function getReviewsByHomeId(homeId) {
+    try {
+      const response = await fetch(
+        `https://${process.env.agoliaAppId}-dsn.algolia.net/1/indexes/reviews/query`,
+        {
+          headers,
+          method: 'POST',
+          body: JSON.stringify({
+            filters: `homeId:${homeId}`,
+          }),
+        },
+      );
+
+      return unwrap(response);
+    } catch (error) {
+      return getErrorResponse(error);
+    }
+  }
+
   // inject dataApi into Nuxt context
   inject('dataApi', {
     getHome,
     getHomes,
+    getReviewsByHomeId,
   });
 }
