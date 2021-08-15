@@ -29,7 +29,7 @@ export default function (context, inject) {
   async function getHome(homeId) {
     try {
       const response = await fetch(
-        `https://${process.env.agoliaAppId}-dsn.algoliiiia.net/1/indexes/homes/${homeId}`,
+        `https://${process.env.agoliaAppId}-dsn.algolia.net/1/indexes/homes/${homeId}`,
         { headers },
       );
 
