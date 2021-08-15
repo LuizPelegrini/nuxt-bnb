@@ -24,8 +24,8 @@
     <div v-for="review in reviews" :key="review.objectID">
       <img :src="review.reviewer.image" alt="reviewer image" /><br />
       {{ review.reviewer.name }}<br />
-      {{ review.comment }}<br />
-      {{ review.date }}<br />
+      <ShortText :text="review.comment" :target="150" /><br />
+      {{ formatDate(review.date) }}<br />
     </div>
   </div>
 </template>
@@ -54,11 +54,13 @@ export default {
       reviews: reviewsResponse.data.hits,
     };
   },
+
   head() {
     return {
       title: this.home.title,
     };
   },
+
   mounted() {
     this.$maps.showMap(
       this.$refs.map,
@@ -67,6 +69,16 @@ export default {
       // eslint-disable-next-line no-underscore-dangle
       this.home._geoloc.lng,
     );
+  },
+
+  methods: {
+    formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleString(undefined, {
+        month: 'long',
+        year: 'numeric',
+      });
+    },
   },
 };
 </script>
