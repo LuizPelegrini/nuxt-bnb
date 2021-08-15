@@ -13,12 +13,18 @@
 </template>
 
 <script>
-import homes from '~/data/homes';
-
 export default {
-  data() {
+  async asyncData({ $dataApi, error }) {
+    const response = await $dataApi.getHomes();
+    if (!response.ok) {
+      return error({
+        statusCode: response.status,
+        message: response.statusText,
+      });
+    }
+
     return {
-      homes: homes.slice(0, 3),
+      homes: response.data.hits,
     };
   },
   head() {

@@ -39,8 +39,23 @@ export default function (context, inject) {
     }
   }
 
+  // Fetch all homes
+  async function getHomes() {
+    try {
+      const response = await fetch(
+        `https://${process.env.agoliaAppId}-dsn.algolia.net/1/indexes/homes`,
+        { headers },
+      );
+
+      return unwrap(response);
+    } catch (error) {
+      return getErrorResponse(error);
+    }
+  }
+
   // inject dataApi into Nuxt context
   inject('dataApi', {
     getHome,
+    getHomes,
   });
 }
