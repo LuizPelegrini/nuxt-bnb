@@ -27,6 +27,11 @@
       <ShortText :text="review.comment" :target="150" /><br />
       {{ formatDate(review.date) }}<br />
     </div>
+    <img :src="user.image" alt="host image" /><br />
+    {{ user.name }}<br />
+    {{ formatDate(user.joined) }}<br />
+    {{ user.description }}<br />
+    {{ user.reviewCount }}<br />
   </div>
 </template>
 
@@ -49,9 +54,18 @@ export default {
       });
     }
 
+    const usersResponse = await $dataApi.getUsersByHomeId(params.id);
+    if (!usersResponse.ok) {
+      return error({
+        statusCode: usersResponse.status,
+        message: usersResponse.statusText,
+      });
+    }
+
     return {
       home: homeResponse.data,
       reviews: reviewsResponse.data.hits,
+      user: usersResponse.data.hits[0], // guaranteed to be only one user
     };
   },
 
