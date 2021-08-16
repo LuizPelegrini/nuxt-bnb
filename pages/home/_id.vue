@@ -38,34 +38,25 @@
 <script>
 export default {
   async asyncData({ params, $dataApi, error }) {
-    const homeResponse = await $dataApi.getHome(params.id);
-    if (!homeResponse.ok) {
-      return error({
-        statusCode: homeResponse.status,
-        message: homeResponse.statusText,
-      });
-    }
+    // start fetching all the same time and resume when all is done
+    const responses = await Promise.all([
+      $dataApi.getHome(params.id),
+      $dataApi.getReviewsByHomeId(params.id),
+      $dataApi.getUsersByHomeId(params.id),
+    ]);
 
-    const reviewsResponse = await $dataApi.getReviewsByHomeId(params.id);
-    if (!reviewsResponse.ok) {
+    const badResponse = responses.find(response => !response.ok);
+    if (badResponse) {
       return error({
-        statusCode: reviewsResponse.status,
-        message: reviewsResponse.statusText,
-      });
-    }
-
-    const usersResponse = await $dataApi.getUsersByHomeId(params.id);
-    if (!usersResponse.ok) {
-      return error({
-        statusCode: usersResponse.status,
-        message: usersResponse.statusText,
+        statusCode: badResponse.status,
+        message: badResponse.statusText,
       });
     }
 
     return {
-      home: homeResponse.data,
-      reviews: reviewsResponse.data.hits,
-      user: usersResponse.data.hits[0], // guaranteed to be only one user
+      home: responses[0].data,
+      reviews: responses[1].data.hits,
+      user: responses[2].data.hits[0], // guaranteed to be only one user
     };
   },
 
