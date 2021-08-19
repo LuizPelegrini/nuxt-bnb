@@ -34,17 +34,35 @@ export default function (context, inject) {
     marker.setMap(map);
   }
 
+  function createAutocomplete(input) {
+    if (!isLoaded) {
+      pending.push({ fn: createAutocomplete, arguments: [input] });
+      return;
+    }
+
+    const autoComplete = new window.google.maps.places.Autocomplete(input, {
+      types: ['(cities)'], // as the user types, predictions will be based on city names
+    });
+
+    autoComplete.addListener('place_changed', () => {
+      const place = autoComplete.getPlace();
+      input.dispatchEvent(
+        new CustomEvent('changed', {
+          detail: { place },
+        }),
+      );
+    });
+  }
+
   // google maps callback
   function initGoogleMaps() {
     isLoaded = true;
-    if (pending.length > 0) {
-      pending.forEach(item => {
-        if (typeof item.fn === 'function') {
-          item.fn(...item.arguments);
-        }
-      });
-      pending = [];
-    }
+    pending.forEach(item => {
+      if (typeof item.fn === 'function') {
+        item.fn(...item.arguments);
+      }
+    });
+    pending = [];
   }
 
   // entry
@@ -59,5 +77,8 @@ export default function (context, inject) {
   addScript();
 
   // this will allow anywhere in Vue, Vuex to access the maps by this.$maps
-  inject('maps', { showMap });
+  inject('maps', {
+    showMap,
+    createAutocomplete,
+  });
 }
