@@ -3,7 +3,13 @@
     <h4>Results for {{ label }}</h4>
     <div ref="map" style="width: 800px; height: 800px; float: right"></div>
     <div v-if="homes.length > 0">
-      <HomeRow v-for="home in homes" :key="home.objectID" :home="home" />
+      <NuxtLink
+        v-for="home in homes"
+        :key="home.objectID"
+        :to="`home/${home.objectID}`"
+      >
+        <HomeRow :home="home" />
+      </NuxtLink>
     </div>
     <div v-else>No Results Found</div>
   </div>
@@ -46,6 +52,16 @@ export default {
     };
   },
 
+  computed: {
+    // returns only the lat,lng info for the homes
+    homesPositions() {
+      return this.homes.map(home => ({
+        // eslint-disable-next-line no-underscore-dangle
+        ...home._geoloc,
+      }));
+    },
+  },
+
   mounted() {
     // show the map when the page is mounted
     this.updateMap();
@@ -53,7 +69,12 @@ export default {
 
   methods: {
     updateMap() {
-      this.$maps.showMap(this.$refs.map, this.lat, this.lng);
+      this.$maps.showMap(
+        this.$refs.map,
+        this.lat,
+        this.lng,
+        this.homesPositions,
+      );
     },
   },
 };

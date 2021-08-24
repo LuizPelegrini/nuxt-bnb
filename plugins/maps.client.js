@@ -5,7 +5,7 @@ export default function (context, inject) {
   let pending = [];
   let isLoaded = false;
 
-  function showMap(element, lat, lng) {
+  function showMap(element, lat, lng, homesLocations) {
     // if map is no loaded, add call to function to the pending list
     if (!isLoaded) {
       // in case maps hasn't been loaded yet, so we cache the location data for later
@@ -25,13 +25,34 @@ export default function (context, inject) {
       zoomControl: true,
     });
 
-    // ...create a marker
-    const marker = new window.google.maps.Marker({
-      position: new window.google.maps.LatLng(lat, lng),
+    if (!homesLocations || homesLocations.length === 0) {
+      // ...create a marker
+      const marker = new window.google.maps.Marker({
+        position: new window.google.maps.LatLng(lat, lng),
+      });
+
+      // ...pin the marker on the map
+      marker.setMap(map);
+      return;
+    }
+
+    // creating markers nearby location
+    // Bounds is the maps viewport
+    const bounds = new window.google.maps.LatLngBounds();
+    homesLocations.forEach(location => {
+      const position = new window.google.maps.LatLng(
+        location.lat,
+        location.lng,
+      );
+      const marker = new window.google.maps.Marker({ position });
+      marker.setMap(map);
+
+      // for each marker added, extend the bounds
+      bounds.extend(position);
     });
 
-    // ...pin the marker on the map
-    marker.setMap(map);
+    // reduce the extra space to show all markers
+    map.fitBounds(bounds);
   }
 
   function createAutocomplete(input) {
