@@ -13,6 +13,7 @@ export default {
   mounted() {
     this.$maps.createAutocomplete(this.$refs.inputRef);
   },
+
   methods: {
     go(event) {
       const { place } = event.detail;

@@ -8,7 +8,11 @@
         :key="home.objectID"
         :to="`home/${home.objectID}`"
       >
-        <HomeRow :home="home" />
+        <HomeRow
+          :home="home"
+          @mouseenter.native="highlightMarker(home.objectID, true)"
+          @mouseleave.native="highlightMarker(home.objectID, false)"
+        />
       </NuxtLink>
     </div>
     <div v-else>No Results Found</div>
@@ -58,6 +62,8 @@ export default {
       return this.homes.map(home => ({
         // eslint-disable-next-line no-underscore-dangle
         ...home._geoloc,
+        pricePerNight: home.pricePerNight, // for displaying the price on the marker
+        homeId: home.objectID, // for adding a css class homes-`homeID` on the marker (useful for selecting later when hovering)
       }));
     },
   },
@@ -76,6 +82,29 @@ export default {
         this.homesPositions,
       );
     },
+
+    // adds/removes the highlighter class
+    highlightMarker(id, isHighlighted) {
+      document
+        .getElementsByClassName(`homes-${id}`)[0]
+        ?.classList?.toggle('marker-highlight', isHighlighted);
+    },
   },
 };
 </script>
+
+<style>
+.marker {
+  background-color: white;
+  border: 1px solid lightgray;
+  font-weight: bold;
+  border-radius: 20px;
+  padding: 5px 8px;
+}
+
+.marker-highlight {
+  background-color: black;
+  color: white !important;
+  border: 1px solid black;
+}
+</style>

@@ -23,6 +23,13 @@ export default function (context, inject) {
       center: new window.google.maps.LatLng(lat, lng),
       disableDefaultUI: true,
       zoomControl: true,
+      styles: [
+        {
+          featureType: 'poi.business', // select all businesses
+          elementType: 'labels.icon', // select the icon of those businesses
+          stylers: [{ visibility: 'off' }], // and turn them off to avoid visual cluttering
+        },
+      ],
     });
 
     if (!homesLocations || homesLocations.length === 0) {
@@ -44,14 +51,22 @@ export default function (context, inject) {
         location.lat,
         location.lng,
       );
-      const marker = new window.google.maps.Marker({ position });
+
+      const marker = new window.google.maps.Marker({
+        position,
+        label: {
+          text: `$${location.pricePerNight}`,
+          className: `marker homes-${location.homeId}`, // homes-id will be used to select the marker when hovering over the HomeRow with the same id
+        },
+        icon: 'https://maps.gstatic.com/mapfiles/transparent.png', // to get rid of the default image
+      });
       marker.setMap(map);
 
       // for each marker added, extend the bounds
       bounds.extend(position);
     });
 
-    // reduce the extra space to show all markers
+    // set the maps viewport
     map.fitBounds(bounds);
   }
 
