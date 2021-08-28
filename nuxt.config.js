@@ -24,4 +24,5 @@ export default {
     prefetchLinks: false, // disable prefetching globally using NuxtLink
   },
   plugins: ['~/plugins/maps.client', '~/plugins/dataApi'],
+  buildModules: ['@nuxtjs/tailwindcss'],
 };
