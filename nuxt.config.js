@@ -25,4 +25,11 @@ export default {
   },
   plugins: ['~/plugins/maps.client', '~/plugins/dataApi'],
   buildModules: ['@nuxtjs/tailwindcss'],
+  css: ['~/assets/sass/app.scss'],
+  build: {
+    extractCSS: true,
+    loaders: {
+      limit: 0,
+    },
+  },
 };

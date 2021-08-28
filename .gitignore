@@ -2,3 +2,4 @@ node_modules
 .nuxt
 .editorconfig
 .env
+.DS_Store
