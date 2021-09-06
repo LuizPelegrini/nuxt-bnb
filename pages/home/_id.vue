@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div class="app-container">
+    <PropertyGallery :images="home.images" />
+    <PropertyDetails :home="home" />
     <div style="display: flex">
       <img
         v-for="image in home.images"
